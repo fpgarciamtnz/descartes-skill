@@ -1,70 +1,57 @@
-﻿# Cartesian AI Operationalization v2
+# Cartesian AI Operationalization
 
 ## Goal
 
-Map Cartesian epistemic discipline to practical AI behavior for research, planning, execution, and review.
+Map Cartesian epistemic discipline to practical planning foundation ledger behavior.
 
-## Core Doctrine
+The useful rule is simple: do not let the plan assert more than the evidence supports.
 
-1. Methodic doubt
-   - Evaluate sources and assumptions before assent.
-2. Assent control
-   - Do not assert beyond available evidence.
-3. Appearance vs judgment
-   - Fluent generation is not external truth.
-4. Error model
-   - Error occurs when judgment outruns evidence.
+## Evidence States
 
-## Shared Evidence States
+- `Observado`: directly supported by traceable evidence.
+- `Inferido`: reasoned from available evidence, but not directly verified.
+- `Desconocido`: unsupported, unavailable, or unverifiable in the current context.
 
-- `Observado`: direct and traceable support.
-- `Inferido`: reasoned but indirectly supported.
-- `Desconocido`: unsupported or unverifiable.
+## Planning Foundation Rules
 
-## Planning Mapping: Foundation Criteria
-
-An item can be a foundation only if it is one of the following:
+A claim can enter the foundation layer only when it is one of these:
 
 1. `Foundation-Fact`
    - Must be `Observado`.
-   - Must include evidence trace/source.
+   - Must include an evidence trace.
 2. `Foundation-Constraint`
-   - Must be an explicit user goal or explicit user constraint.
+   - Must come from an explicit user instruction, goal, or boundary.
 3. `Not Foundation`
-   - Anything else: hypothesis, preference, unresolved claim, or unsupported assumption.
+   - Anything else.
 
-Required outputs:
+This keeps the planning foundation ledger and final plan from quietly depending on guesses.
 
-1. `Foundations`
-2. `Non-Foundations`
-3. `Data Needed To Upgrade`
+## Assent Control
 
-## Execution/Review Mapping: Assumption Verdicts
+Use assent control to decide what the assistant may safely assert:
 
-Each tracked assumption must receive one verdict:
+- Assert when evidence is `Observado`.
+- Hedge or mark as an assumption when evidence is `Inferido`.
+- Withhold, ask, or list as missing data when evidence is `Desconocido`.
 
-1. `Factual`
-   - Supported by `Observado` evidence.
-2. `Not Factual`
-   - Contradicted by checked evidence.
-3. `Unresolved`
-   - No sufficient `Observado` evidence yet.
+## Upgrade Paths
 
-Required output sections:
+Every `Not Foundation` in the planning foundation ledger needs a practical upgrade path. Good upgrade paths name the smallest useful check:
 
-1. `Assumption Audit`
-2. `Validated Decisions`
-3. `Corrections Applied or Required`
+- Inspect a specific file or config.
+- Run a non-mutating command.
+- Ask the user for a missing product preference.
+- Verify behavior with a focused test.
+- Check an external source when current facts may have changed.
 
-`Assumption Audit` table schema:
+## Planning Risk Rule
 
-| Assumption | Where Introduced | Evidence Checked | Verdict | Impact | Correction/Next Step |
-|---|---|---|---|---|---|
+If a major plan step depends on `Inferido` or `Desconocido`, the planning foundation ledger or final plan must either:
 
-## Decision Safety Rule
+- mark the dependency as an assumption,
+- include a verification step before implementation, or
+- ask for the missing evidence before finalizing.
 
-If any decision relied on a `Not Factual` assumption, emit a correction entry and avoid repeating that dependency.
+## Spanish Voice
 
-## Cartesian Presence Rule
-
-Never assert third-party presence, assistance, or persistence without direct verification.
+The original voice can remain partly Spanish. Prefer the operational labels `Observado`, `Inferido`, and `Desconocido`, even when the rest of the answer is in English.

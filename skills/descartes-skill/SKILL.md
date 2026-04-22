@@ -1,116 +1,129 @@
 ---
 name: descartes-skill
-description: Skill cartesiano para investigacion y discusion tecnica. Usar para dos propositos: (1) en planning, distinguir foundations reales de non-foundations; (2) en execution/review, auditar assumptions y verificar si son factual, not factual o unresolved. Aplicar control de asentimiento con trazabilidad de evidencia.
+description: "Build planning foundation ledgers that separate verified facts, explicit constraints, unresolved assumptions, and upgrade evidence. Use for planning, architecture, strategy, roadmap, or design requests where Codex must show evidence before a final plan."
 ---
 
-# Descartes Epistemic Guard v3
+# Descartes Planning Foundation Ledger
 
-## Purpose
+## Single Responsibility
 
-This skill is research-first and discussion-first.
-Use it to control epistemic quality in two situations:
+Use this skill to make planning safer by building a planning foundation ledger before presenting a final plan.
 
-1. Planning: identify what is a real foundation vs what is not.
-2. Execution or review: audit assumptions and verify whether each is factual or not.
+Do not use this skill as a general execution, code review, test, postmortem, research, or philosophy skill. Use it for those areas only when the user explicitly asks for a planning foundation ledger before a plan.
 
-## Epistemic Base Model
+## Trigger Guidance
 
-Always keep these evidence states:
+Use this skill when the user asks to:
 
-- `Observado`: directly supported by traceable evidence.
-- `Inferido`: plausible by reasoning, not directly verified.
-- `Desconocido`: unsupported or currently unverifiable.
+- Plan, design, architect, sequence, or choose a strategy.
+- Separate foundations, facts, constraints, assumptions, or unknowns for a plan.
+- Audit planning assumptions before a final plan.
+- Invoke `$descartes-skill` directly.
 
-Behavior mapping:
+Do not use this skill when the user asks only to:
 
-- Planning: only `Observado` plus explicit user constraints/goals may become foundations.
-- Execution/review: assumptions without `Observado` support must end as `Unresolved` or `Not Factual`.
+- Implement, edit, run, test, debug, or review code without a planning request.
+- Summarize Descartes or discuss philosophy without applying it to planning.
+- Produce a quick answer where a planning foundation ledger would add friction and was not requested.
 
-Never assert third-party presence, assistance, or persistence without verification.
+## Core Vocabulary
 
-## Auto Mode Trigger By Intent
+Evidence states:
 
-Infer mode from request intent:
+- `Observado`: directly supported by traceable evidence in the prompt, files, tools, or user statements.
+- `Inferido`: plausible from reasoning, but not directly verified.
+- `Desconocido`: unsupported, missing, or currently unverifiable.
 
-- Planning cues: `plan`, `design`, `architecture`, `roadmap`, `strategy`.
-- Execution/review cues: `implement`, `run`, `review`, `validate`, `test`, `postmortem`.
+Planning classifications:
 
-If both intent families appear, emit planning blocks first, then execution/review blocks.
+- `Foundation-Fact`: an `Observado` statement with an evidence trace.
+- `Foundation-Constraint`: an explicit user goal, boundary, preference, or instruction.
+- `Not Foundation`: a hypothesis, guess, preference not stated by the user, unresolved claim, or inferred claim.
 
-## Progressive Disclosure
+Audit verdicts:
 
-Read files in this order:
+- `Factual`: supported by `Observado` evidence.
+- `Not Factual`: contradicted by checked evidence.
+- `Unresolved`: not sufficiently supported or contradicted.
 
-1. Always load [references/index.md](references/index.md) first.
-2. Always load [references/epistemic-checklist.md](references/epistemic-checklist.md) and [references/cartesian-ai-operationalization.md](references/cartesian-ai-operationalization.md).
-3. Load [references/cartesian-method-knowledge-illusion-report.md](references/cartesian-method-knowledge-illusion-report.md) only for conceptual/theoretical requests, historical interpretation, or deep epistemology synthesis.
+## Required Workflow
 
-Keep the main response grounded in evidence traces and avoid loading large references unless needed.
+1. Gather available evidence before asking questions when repository or system context can answer them.
+2. Atomize candidate claims into short, testable statements.
+3. Classify each claim with the fixed vocabulary.
+4. Keep `Foundation-Fact` and `Foundation-Constraint` separate.
+5. Put every unsupported or inferred claim in `Non-Foundations`.
+6. For every `Not Foundation`, state the minimum evidence needed to upgrade it.
+7. Before final plan output, ask one structured planning gate question when the environment supports it.
 
-## Plan Gate (Mandatory For Planning)
+## Planning Gate
 
-When planning intent is detected, run this gate before any final plan output.
+Before presenting a final plan, ask one structured choice question with exactly these option labels:
 
-Required question mechanism:
+- `Yes, audit`
+- `Great`
+- `Something else`
 
-1. Use `request_user_input` with one question and exactly these two option labels:
-- `Audit`
-- `Proceed with the plan`
-2. Do not output the final plan before a selection is received.
-3. If `request_user_input` is unavailable in the current mode, ask a single concise plain-text question with the same two options.
+Behavior:
 
-Deterministic behavior by selection:
+- `Yes, audit`: run an assumption-audit pass, then include `Assumption Audit` before the final plan.
+- `Great`: return the final plan without audit augmentation.
+- `Something else`: ask one short follow-up, then align the final plan with that direction.
 
-- `Audit`: use `$descartes-skill` to audit planning assumptions, then output the final plan with the audit included.
-- `Proceed with the plan`: output the final plan directly so the user can read it, without audit augmentation.
+If structured choices are unavailable, ask the same question in concise plain text.
 
-## Planning Contract: Foundation Ledger
+## Output Format
 
-When in planning mode, output these sections in this order:
+When this skill is active, produce a planning foundation ledger with these sections in this order unless the user asks for a shorter form:
 
 1. `Foundations`
 2. `Non-Foundations`
 3. `Data Needed To Upgrade`
+4. `Assumption Audit` only when requested by the planning gate or by an explicit planning-assumption audit request
+5. `Final Plan`
 
-Classification vocabulary is fixed:
+Use this table for `Foundations`:
 
-- `Foundation-Fact`: source-verified statement.
-- `Foundation-Constraint`: explicit user goal or constraint.
-- `Not Foundation`: hypothesis, preference, guess, unresolved claim.
+| Claim | Class | Evidence |
+|---|---|---|
 
-Mandatory rules:
+Rules:
 
-1. Every `Foundation-Fact` must include evidence trace/source.
-2. Every `Not Foundation` must include an upgrade path describing the minimal evidence needed to promote it.
-3. Keep claims atomic whenever possible.
-4. If the user selected `Audit` in the Plan Gate, append `Assumption Audit` after `Data Needed To Upgrade`.
+- `Class` must be `Foundation-Fact` or `Foundation-Constraint`.
+- `Foundation-Fact` evidence must identify the prompt, file, command output, source, or tool result.
+- `Foundation-Constraint` evidence must point to the user's explicit instruction.
 
-## Execution/Review Contract: Assumption Audit
+Use this table for `Non-Foundations`:
 
-When in execution/review mode, output these sections in this order:
+| Claim | Evidence State | Why Not Foundation | Upgrade Path |
+|---|---|---|---|
 
-1. `Assumption Audit`
-2. `Validated Decisions`
-3. `Corrections Applied or Required`
+Rules:
 
-`Assumption Audit` must be a table with these exact columns:
+- `Evidence State` must be `Inferido` or `Desconocido`.
+- `Upgrade Path` must name the smallest practical check, source, or user answer needed.
 
-| Assumption | Where Introduced | Evidence Checked | Verdict | Impact | Correction/Next Step |
+Use this table for `Assumption Audit`:
+
+| Assumption | Evidence Checked | Verdict | Risk | Plan Impact | Next Step |
 |---|---|---|---|---|---|
 
-Verdict vocabulary is fixed:
+Rules:
 
-- `Factual`
-- `Not Factual`
-- `Unresolved`
+- `Verdict` must be `Factual`, `Not Factual`, or `Unresolved`.
+- If any plan decision depends on `Not Factual`, revise the plan before presenting it.
+- If any plan decision depends on `Unresolved`, either mark it as an assumption or ask for the missing evidence.
 
-Mandatory rules:
+## Reference Loading
 
-1. Explicitly check whether any decision relied on a `Not Factual` assumption.
-2. If yes, record correction in `Corrections Applied or Required`.
-3. If evidence is missing, mark `Unresolved` and request the minimum additional evidence.
+Load references only when they help the current request:
 
-## Language Patterns
+- Read [references/index.md](references/index.md) when unsure which reference supports the current planning foundation ledger.
+- Read [references/epistemic-checklist.md](references/epistemic-checklist.md) for the operational checklist.
+- Read [references/cartesian-ai-operationalization.md](references/cartesian-ai-operationalization.md) when the planning request needs more detail on evidence states or assent control.
+- Read [references/cartesian-method-knowledge-illusion-report.md](references/cartesian-method-knowledge-illusion-report.md) only when the user asks for the Descartes theory behind the workflow.
+
+## Language Pattern
 
 Prefer direct phrasing:
 
@@ -119,16 +132,9 @@ Prefer direct phrasing:
 - "I cannot assert ... from the available context."
 - "To confirm this, I need ..."
 
-Spanish equivalent:
+Spanish equivalents are acceptable when the conversation is in Spanish:
 
 - "Con la evidencia disponible, puedo afirmar..."
 - "Infiero ... si asumimos ..."
 - "No puedo afirmar ... con el contexto actual."
 - "Para confirmarlo, necesito ..."
-
-## References
-
-Use [index.md](references/index.md) to select the right reference set.
-Use [epistemic-checklist.md](references/epistemic-checklist.md) as an operational checklist.
-Use [cartesian-ai-operationalization.md](references/cartesian-ai-operationalization.md) for policy mapping and verdict logic.
-Use [cartesian-method-knowledge-illusion-report.md](references/cartesian-method-knowledge-illusion-report.md) for deep theoretical grounding only when needed.

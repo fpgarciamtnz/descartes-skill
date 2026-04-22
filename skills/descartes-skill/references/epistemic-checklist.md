@@ -1,41 +1,43 @@
-﻿# Epistemic Checklist v2
+# Epistemic Checklist
 
-Use this checklist before finalizing any planning, execution, or review response.
+Use this checklist before presenting a planning foundation ledger or final plan.
 
-## Planning Checklist (Foundation Ledger)
+## Planning Foundation Ledger
 
-1. Candidate claims listed
-   - Enumerate all candidate foundations before deciding.
-2. Evidence state assigned
-   - Mark each item as `Observado`, `Inferido`, or `Desconocido`.
-3. Foundation classification applied
-   - Use only: `Foundation-Fact`, `Foundation-Constraint`, `Not Foundation`.
-4. Traceability attached
-   - Every `Foundation-Fact` includes evidence trace/source.
-5. Constraint integrity checked
-   - Every `Foundation-Constraint` maps to explicit user goals/constraints.
-6. Upgrade path documented
-   - Every `Not Foundation` includes minimal evidence required to upgrade.
-7. Required planning sections present
-   - `Foundations`, `Non-Foundations`, `Data Needed To Upgrade`.
+1. List candidate planning claims.
+2. Make each claim atomic.
+3. Assign one evidence state: `Observado`, `Inferido`, or `Desconocido`.
+4. Promote only `Observado` facts to `Foundation-Fact`.
+5. Promote only explicit user goals or constraints to `Foundation-Constraint`.
+6. Put hypotheses, guesses, and unsupported claims in `Non-Foundations`.
+7. Attach an evidence trace to every `Foundation-Fact`.
+8. Attach the user's explicit instruction to every `Foundation-Constraint`.
+9. Add a minimum upgrade path for every `Not Foundation`.
 
-## Execution/Review Checklist (Assumption Audit)
+## Planning Gate
 
-1. Assumptions enumerated
-   - List assumptions that influenced implementation or review.
-2. Evidence checked per assumption
-   - Capture what evidence was checked and from where.
-3. Verdict assigned from fixed vocabulary
-   - Use only: `Factual`, `Not Factual`, `Unresolved`.
-4. Dependency risk checked
-   - Explicitly verify whether any decision relied on `Not Factual` assumptions.
-5. Corrections captured
-   - Record correction in `Corrections Applied or Required` when needed.
-6. Missing evidence handled
-   - Mark `Unresolved` and request minimal additional evidence.
-7. Required execution/review sections present
-   - `Assumption Audit`, `Validated Decisions`, `Corrections Applied or Required`.
+Before final plan output, ask one structured choice question with exactly:
 
-## Cartesian Guardrail
+- `Yes, audit`
+- `Great`
+- `Something else`
 
-Never assert third-party presence, assistance, or persistence without direct verification.
+Apply the selected behavior:
+
+- `Yes, audit`: run an assumption audit and revise the plan if needed.
+- `Great`: return the final plan directly.
+- `Something else`: ask one short follow-up and adapt the final plan.
+
+## Assumption Audit
+
+When the planning gate requests an assumption audit:
+
+1. Enumerate assumptions that could affect the plan.
+2. Check what evidence supports or contradicts each assumption.
+3. Use only `Factual`, `Not Factual`, or `Unresolved`.
+4. Revise any plan decision that depends on `Not Factual`.
+5. Mark or ask about any plan decision that depends on `Unresolved`.
+
+## Guardrail
+
+Never assert third-party presence, assistance, persistence, file state, tool behavior, or external facts without direct evidence.
