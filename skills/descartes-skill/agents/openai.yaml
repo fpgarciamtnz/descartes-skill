@@ -1,0 +1,4 @@
+interface:
+  display_name: "Descartes Skill"
+  short_description: "Planning foundations + execution assumption audit"
+  default_prompt: "Use $descartes-skill for planning foundations and execution/review assumption audit. Before final plans, run the mandatory plan gate with choices Audit and Proceed with the plan. Audit engages $descartes-skill to audit assumptions before the final plan; Proceed with the plan writes the final plan directly for the user to read."
