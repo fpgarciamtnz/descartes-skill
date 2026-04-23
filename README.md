@@ -15,7 +15,7 @@ npx skills add fpgarciamtnz/descartes-skill --skill descartes-skill
 If you want to install it globally or target a specific agent, add the usual `skills` CLI flags. For example:
 
 ```bash
-npx skills add fpgarciamtnz/descartes-skill --skill descartes-skill -g -a codex
+npx skills add fpgarciamtnz/descartes-skill --skill descartes-skill -g --agent <agent-name>
 ```
 
 Restart your agent after installing or updating the skill so it reloads the metadata.
