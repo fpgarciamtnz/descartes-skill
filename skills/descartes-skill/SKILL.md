@@ -54,23 +54,26 @@ Audit verdicts:
 4. Keep `Foundation-Fact` and `Foundation-Constraint` separate.
 5. Put every unsupported or inferred claim in `Non-Foundations`.
 6. For every `Not Foundation`, state the minimum evidence needed to upgrade it.
-7. Before final plan output, ask one structured planning gate question when the environment supports it.
+7. Before final plan output, use one structured planning gate question through the host's structured choice UI.
+8. Treat plain-text rendering of the planning gate as a degraded fallback state that should be called out explicitly, not as a normal equivalent of the structured UI.
 
 ## Planning Gate
 
 Before presenting a final plan, ask one structured choice question with exactly these option labels:
 
-- `Yes, audit`
-- `Great`
-- `Something else`
+- `Audit this plan`
+- `Do not review the plan`
 
 Behavior:
 
-- `Yes, audit`: run an assumption-audit pass, then include `Assumption Audit` before the final plan.
-- `Great`: return the final plan without audit augmentation.
-- `Something else`: ask one short follow-up, then align the final plan with that direction.
+- `Audit this plan`: run an assumption-audit pass, then include `Assumption Audit` before the final plan.
+- `Do not review the plan`: skip the assumption-audit pass and continue with the normal planning response for that turn.
 
-If structured choices are unavailable, ask the same question in concise plain text.
+Host requirement:
+
+- Render this gate through the same structured question UI used for normal Codex clarification prompts.
+- Do not silently downgrade the gate into a plain-text option list during long threads, context compaction, or prompt merging.
+- If the host truly cannot render the structured question UI, explicitly state that the gate degraded to plain text and treat that as a fallback bug, not as intended UX.
 
 ## Output Format
 
@@ -79,7 +82,7 @@ When this skill is active, produce a planning foundation ledger with these secti
 1. `Foundations`
 2. `Non-Foundations`
 3. `Data Needed To Upgrade`
-4. `Assumption Audit` only when requested by the planning gate or by an explicit planning-assumption audit request
+4. `Assumption Audit` only when requested by `Audit this plan` or by an explicit planning-assumption audit request
 5. `Final Plan`
 
 Use this table for `Foundations`:
